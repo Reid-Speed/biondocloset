@@ -1,4 +1,4 @@
-\import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Tag, Share2, Plus, Trash2, Edit2, Check, X } from 'lucide-react';
 
 export default function ApartmentStore() {
