@@ -14,24 +14,16 @@ export default function ApartmentStore() {
   const [newItem, setNewItem] = useState({ name: '', price: '', description: '', image: '' });
   const [loading, setLoading] = useState(true);
 
-  // Load items and user data on mount
   useEffect(() => {
-    loadItems();
     loadUserData();
-    setLoading(false);
+    loadItems();
   }, []);
 
-  const loadItems = () => {
-    const storedItems = localStorage.getItem('apartment_items');
-    if (storedItems) {
-      setItems(JSON.parse(storedItems));
+  useEffect(() => {
+    if (userCode) {
+      loadDiscountCount();
     }
-  };
-
-  const saveItems = (newItems) => {
-    localStorage.setItem('apartment_items', JSON.stringify(newItems));
-    setItems(newItems);
-  };
+  }, [userCode]);
 
   const loadUserData = () => {
     let code = localStorage.getItem('my_referral_code');
@@ -40,10 +32,27 @@ export default function ApartmentStore() {
       localStorage.setItem('my_referral_code', code);
     }
     setUserCode(code);
+  };
 
-    const discounts = localStorage.getItem('my_discounts');
-    if (discounts) {
-      setDiscountCount(parseInt(discounts));
+  const loadItems = async () => {
+    try {
+      const res = await fetch('/api/items');
+      const data = await res.json();
+      setItems(data);
+    } catch (error) {
+      console.error('Error loading items:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadDiscountCount = async () => {
+    try {
+      const res = await fetch(`/api/referrals?userCode=${userCode}`);
+      const data = await res.json();
+      setDiscountCount(data.count || 0);
+    } catch (error) {
+      console.error('Error loading discounts:', error);
     }
   };
 
@@ -51,26 +60,40 @@ export default function ApartmentStore() {
     return 'REF' + Math.random().toString(36).substr(2, 8).toUpperCase();
   };
 
-  const applyReferralCode = () => {
+  const applyReferralCode = async () => {
     if (!referralCode.trim()) return;
-    
-    const validCode = localStorage.getItem(`referral:${referralCode}`);
-    if (validCode === 'active') {
-      const usedKey = `used:${userCode}:${referralCode}`;
-      if (localStorage.getItem(usedKey)) {
-        alert('You have already used this referral code!');
+
+    try {
+      const validateRes = await fetch('/api/referrals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'validate', code: referralCode })
+      });
+      const validateData = await validateRes.json();
+
+      if (!validateData.valid) {
+        alert('Invalid referral code');
         return;
       }
 
-      const newDiscountCount = discountCount + 1;
-      setDiscountCount(newDiscountCount);
-      localStorage.setItem('my_discounts', newDiscountCount.toString());
-      localStorage.setItem(usedKey, 'true');
-      
-      alert('Referral code applied! You now have ' + newDiscountCount + ' discount(s) (50% off each)');
+      const useRes = await fetch('/api/referrals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'use', userCode, usedCode: referralCode })
+      });
+
+      const useData = await useRes.json();
+
+      if (useData.error) {
+        alert(useData.error);
+        return;
+      }
+
+      await loadDiscountCount();
+      alert(`Referral code applied! You now have ${discountCount + 1} discount(s)`);
       setReferralCode('');
-    } else {
-      alert('Invalid referral code');
+    } catch (error) {
+      alert('Error applying referral code');
     }
   };
 
@@ -86,20 +109,29 @@ export default function ApartmentStore() {
     setCart(item);
   };
 
-  const checkout = () => {
+  const checkout = async () => {
     if (!cart) return;
-    
-    // Remove item from store
-    const updatedItems = items.filter(i => i.id !== cart.id);
-    saveItems(updatedItems);
-    
-    // Register user's referral code for others to use
-    localStorage.setItem(`referral:${userCode}`, 'active');
-    
-    setShowCheckout(true);
+
+    try {
+      await fetch('/api/items', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: cart.id })
+      });
+
+      await fetch('/api/referrals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'register', code: userCode })
+      });
+
+      await loadItems();
+      setShowCheckout(true);
+    } catch (error) {
+      alert('Error processing checkout');
+    }
   };
 
-  // Admin functions
   const handleAdminLogin = () => {
     if (adminPassword === 'admin123') {
       setIsAdmin(true);
@@ -108,7 +140,7 @@ export default function ApartmentStore() {
     }
   };
 
-  const addItem = () => {
+  const addItem = async () => {
     if (!newItem.name || !newItem.price) {
       alert('Please fill in name and price');
       return;
@@ -122,28 +154,57 @@ export default function ApartmentStore() {
       image: newItem.image
     };
 
-    const updatedItems = [...items, item];
-    saveItems(updatedItems);
-    setNewItem({ name: '', price: '', description: '', image: '' });
+    try {
+      await fetch('/api/items', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item)
+      });
+
+      await loadItems();
+      setNewItem({ name: '', price: '', description: '', image: '' });
+    } catch (error) {
+      alert('Error adding item');
+    }
   };
 
-  const deleteItem = (itemId) => {
-    const updatedItems = items.filter(i => i.id !== itemId);
-    saveItems(updatedItems);
+  const deleteItem = async (itemId) => {
+    try {
+      await fetch('/api/items', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: itemId })
+      });
+
+      await loadItems();
+    } catch (error) {
+      alert('Error deleting item');
+    }
   };
 
-  const updateItem = () => {
+  const updateItem = async () => {
     if (!editingItem) return;
 
-    const updatedItems = items.map(i => i.id === editingItem.id ? editingItem : i);
-    saveItems(updatedItems);
-    setEditingItem(null);
+    try {
+      await fetch('/api/items', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingItem)
+      });
+
+      await loadItems();
+      setEditingItem(null);
+    } catch (error) {
+      alert('Error updating item');
+    }
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-xl">Loading store...</div>
-    </div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-xl">Loading store...</div>
+      </div>
+    );
   }
 
   if (showCheckout) {
@@ -163,7 +224,7 @@ export default function ApartmentStore() {
             <p className="text-2xl font-bold text-green-600">{userCode}</p>
             <p className="text-xs text-gray-600 mt-2">Share this with friends to earn 50% discounts!</p>
           </div>
-          <button 
+          <button
             onClick={() => {
               setShowCheckout(false);
               setCart(null);
@@ -179,7 +240,6 @@ export default function ApartmentStore() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
@@ -206,7 +266,6 @@ export default function ApartmentStore() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Referral Section */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 mb-8 text-white">
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
@@ -239,7 +298,6 @@ export default function ApartmentStore() {
           </div>
         </div>
 
-        {/* Admin Panel */}
         {isAdmin && (
           <div className="bg-white rounded-lg shadow p-6 mb-8">
             <h2 className="text-xl font-bold mb-4">Add New Item</h2>
@@ -280,7 +338,6 @@ export default function ApartmentStore() {
           </div>
         )}
 
-        {/* Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((item) => (
             <div key={item.id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
@@ -324,9 +381,9 @@ export default function ApartmentStore() {
                       <p className="text-gray-600 text-sm mb-3">{item.description}</p>
                     )}
                     <div className="mb-3">
-                      <p className="text-gray-500 text-sm line-through">${item.price.toFixed(2)}</p>
+                      <p className="text-gray-500 text-sm line-through">${parseFloat(item.price).toFixed(2)}</p>
                       <p className="text-2xl font-bold text-green-600">
-                        ${calculatePrice(item.price).toFixed(2)}
+                        ${calculatePrice(parseFloat(item.price)).toFixed(2)}
                       </p>
                       {discountCount > 0 && (
                         <p className="text-xs text-green-600">
@@ -369,7 +426,6 @@ export default function ApartmentStore() {
         )}
       </div>
 
-      {/* Cart Modal */}
       {cart && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
@@ -378,12 +434,12 @@ export default function ApartmentStore() {
               <h3 className="font-semibold text-lg">{cart.name}</h3>
               <p className="text-gray-600 mb-2">{cart.description}</p>
               <div className="bg-gray-50 p-3 rounded">
-                <p className="text-sm text-gray-600">Original price: ${cart.price.toFixed(2)}</p>
+                <p className="text-sm text-gray-600">Original price: ${parseFloat(cart.price).toFixed(2)}</p>
                 {discountCount > 0 && (
                   <p className="text-sm text-green-600">With {discountCount} discount{discountCount > 1 ? 's' : ''}</p>
                 )}
                 <p className="text-2xl font-bold text-green-600 mt-2">
-                  Final: ${calculatePrice(cart.price).toFixed(2)}
+                  Final: ${calculatePrice(parseFloat(cart.price)).toFixed(2)}
                 </p>
               </div>
             </div>
