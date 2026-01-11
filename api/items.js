@@ -1,50 +1,55 @@
-import { sql } from '@vercel/postgres';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 export default async function handler(req, res) {
   try {
-    // Initialize tables if they don't exist
-    await sql`
-      CREATE TABLE IF NOT EXISTS items (
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        price DECIMAL NOT NULL,
-        description TEXT,
-        image TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `;
-
     if (req.method === 'GET') {
       // Get all items
-      const { rows } = await sql`SELECT * FROM items ORDER BY created_at DESC`;
-      return res.status(200).json(rows);
+      const { data, error } = await supabase
+        .from('items')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return res.status(200).json(data || []);
     }
 
     if (req.method === 'POST') {
       // Add new item
       const { id, name, price, description, image } = req.body;
-      await sql`
-        INSERT INTO items (id, name, price, description, image)
-        VALUES (${id}, ${name}, ${price}, ${description || ''}, ${image || ''})
-      `;
+      const { data, error } = await supabase
+        .from('items')
+        .insert([{ id, name, price, description: description || '', image: image || '' }]);
+
+      if (error) throw error;
       return res.status(201).json({ success: true });
     }
 
     if (req.method === 'PUT') {
       // Update item
       const { id, name, price, description, image } = req.body;
-      await sql`
-        UPDATE items
-        SET name = ${name}, price = ${price}, description = ${description || ''}, image = ${image || ''}
-        WHERE id = ${id}
-      `;
+      const { data, error } = await supabase
+        .from('items')
+        .update({ name, price, description: description || '', image: image || '' })
+        .eq('id', id);
+
+      if (error) throw error;
       return res.status(200).json({ success: true });
     }
 
     if (req.method === 'DELETE') {
       // Delete item
       const { id } = req.body;
-      await sql`DELETE FROM items WHERE id = ${id}`;
+      const { data, error } = await supabase
+        .from('items')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
       return res.status(200).json({ success: true });
     }
 
