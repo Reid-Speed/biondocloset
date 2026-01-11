@@ -30,18 +30,21 @@ export default function ApartmentStore() {
     if (!code) {
       code = generateReferralCode();
       localStorage.setItem('my_referral_code', code);
-      
-      // Register the code immediately
-      try {
-        await fetch('/api/referrals', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'register', code })
-        });
-      } catch (error) {
-        console.error('Error registering referral code:', error);
-      }
     }
+    
+    // Always try to register the code (in case it wasn't registered before)
+    try {
+      const response = await fetch('/api/referrals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'register', code })
+      });
+      const data = await response.json();
+      console.log('Referral code registered:', code, data);
+    } catch (error) {
+      console.error('Error registering referral code:', error);
+    }
+    
     setUserCode(code);
   };
 
