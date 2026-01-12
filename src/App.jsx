@@ -263,10 +263,10 @@ export default function ApartmentStore() {
             <div>
               <h1 className="text-5xl font-bold tracking-tight text-stone-800 uppercase" 
                   style={{fontFamily: 'Impact, Arial Black, sans-serif', letterSpacing: '0.05em'}}>
-                Reid's Collection
+                Biondo's Closet
               </h1>
               <p className="text-stone-700 text-lg mt-2 font-medium" style={{fontFamily: 'Georgia, serif'}}>
-                Timeless pieces for modern living
+                It isn't free... yet...
               </p>
             </div>
             {!isAdmin && (
