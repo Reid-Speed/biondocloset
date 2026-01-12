@@ -258,8 +258,8 @@ export default function ApartmentStore() {
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Apartment Sale</h1>
-              <p className="text-gray-600">Everything must go!</p>
+              <h1 className="text-3xl font-bold text-gray-900">Biondo's Closet</h1>
+              <p className="text-gray-600">It's not free, but it can be</p>
             </div>
             {!isAdmin && (
               <div className="flex gap-2">
@@ -288,7 +288,7 @@ export default function ApartmentStore() {
                 <h2 className="text-xl font-bold">Your Referral Code</h2>
               </div>
               <p className="text-3xl font-bold mb-2">{userCode}</p>
-              <p className="text-blue-100">Share with friends to earn 50% discounts!</p>
+              <p className="text-blue-100">Share with friends to earn 50% discount codes!</p>
               <p className="text-sm mt-2">Active discounts: <span className="font-bold text-xl">{discountCount}</span> (stackable!)</p>
             </div>
             <div className="bg-white/20 rounded-lg p-4 backdrop-blur">
