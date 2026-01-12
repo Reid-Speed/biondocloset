@@ -223,27 +223,27 @@ export default function ApartmentStore() {
 
   if (showCheckout) {
     return (
-      <div className="min-h-screen bg-amber-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center border-4 border-emerald-700">
-          <Check className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
-          <h2 className="text-3xl font-normal mb-4 text-gray-900" style={{fontFamily: 'Georgia, serif'}}>Order Confirmed!</h2>
-          <p className="text-gray-700 mb-6">
+      <div className="min-h-screen bg-stone-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-none shadow-2xl p-10 max-w-md w-full text-center border-4 border-stone-600">
+          <Check className="w-20 h-20 text-lime-500 mx-auto mb-4" />
+          <h2 className="text-4xl font-bold mb-6 text-stone-900 uppercase tracking-wide" style={{fontFamily: 'Impact, Arial Black, sans-serif'}}>Order Confirmed!</h2>
+          <p className="text-stone-800 mb-6 font-medium text-lg" style={{fontFamily: 'Georgia, serif'}}>
             Please send ${calculatePrice(cart.price).toFixed(2)} via Venmo to complete your purchase.
           </p>
-          <div className="bg-green-50 border-2 border-emerald-600 rounded-lg p-4 mb-6">
-            <p className="font-normal text-xl text-gray-900">Venmo: @Reid-Biondo</p>
+          <div className="bg-lime-100 border-4 border-lime-500 rounded-none p-5 mb-6">
+            <p className="font-bold text-2xl text-stone-900 uppercase tracking-wide">Venmo: @Reid-Biondo</p>
           </div>
-          <div className="bg-teal-50 border-2 border-teal-500 rounded-lg p-4 mb-4">
-            <p className="text-sm font-medium mb-2 text-gray-800">Your Referral Code:</p>
-            <p className="text-2xl font-medium text-gray-900 tracking-wider">{userCode}</p>
-            <p className="text-xs text-gray-700 mt-2">Share this with friends to earn 50% discounts!</p>
+          <div className="bg-stone-200 border-4 border-stone-500 rounded-none p-5 mb-6">
+            <p className="text-sm font-bold mb-3 text-stone-800 uppercase tracking-wide">Your Referral Code:</p>
+            <p className="text-3xl font-bold text-stone-900 tracking-widest" style={{fontFamily: 'Courier New, monospace'}}>{userCode}</p>
+            <p className="text-xs text-stone-700 mt-3 font-medium">Share this with friends to earn 50% discounts!</p>
           </div>
           <button
             onClick={() => {
               setShowCheckout(false);
               setCart(null);
             }}
-            className="bg-emerald-600 text-white px-6 py-2 rounded hover:bg-emerald-700 font-normal"
+            className="bg-green-700 text-white px-8 py-3 rounded-none hover:bg-green-800 font-bold uppercase tracking-wide shadow-lg"
           >
             Back to Store
           </button>
@@ -253,13 +253,21 @@ export default function ApartmentStore() {
   }
 
   return (
-    <div className="min-h-screen bg-amber-50">
-      <div className="bg-orange-100 border-b-4 border-emerald-700">
+    <div className="min-h-screen bg-stone-100">
+      {/* Simplified Greek Key Pattern Border */}
+      <div className="h-12 bg-gradient-to-r from-green-700 via-lime-500 to-yellow-400 border-b-4 border-stone-800"></div>
+
+      <div className="bg-stone-200 border-b-2 border-stone-400">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-4xl font-normal tracking-wide text-gray-900" style={{fontFamily: 'Georgia, serif'}}>Reid's Mid-Century Collection</h1>
-              <p className="text-gray-800 text-lg mt-1 font-normal">Curated pieces for modern living</p>
+              <h1 className="text-5xl font-bold tracking-tight text-stone-800 uppercase" 
+                  style={{fontFamily: 'Impact, Arial Black, sans-serif', letterSpacing: '0.05em'}}>
+                Reid's Collection
+              </h1>
+              <p className="text-stone-700 text-lg mt-2 font-medium" style={{fontFamily: 'Georgia, serif'}}>
+                Timeless pieces for modern living
+              </p>
             </div>
             {!isAdmin && (
               <div className="flex gap-2">
@@ -270,7 +278,7 @@ export default function ApartmentStore() {
                   onChange={(e) => setAdminPassword(e.target.value)}
                   className="border rounded px-3 py-2"
                 />
-                <button onClick={handleAdminLogin} className="bg-emerald-700 text-white px-4 py-2 rounded hover:bg-emerald-800">
+                <button onClick={handleAdminLogin} className="bg-green-800 text-white px-5 py-2 rounded-none font-bold uppercase tracking-wide hover:bg-green-900" style={{fontFamily: 'Arial, sans-serif'}}>
                   Admin
                 </button>
               </div>
@@ -280,30 +288,33 @@ export default function ApartmentStore() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-gradient-to-r from-emerald-500 via-teal-400 to-green-400 rounded-lg p-6 mb-8 text-gray-900 shadow-lg">
+        <div className="bg-gradient-to-r from-slate-700 via-stone-700 to-slate-600 rounded-2xl p-8 mb-8 text-white shadow-2xl border-4 border-stone-400">
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Share2 className="w-5 h-5" />
-                <h2 className="text-xl font-normal" style={{fontFamily: 'Georgia, serif'}}>Your Referral Code</h2>
+              <div className="flex items-center gap-3 mb-3">
+                <Share2 className="w-6 h-6" />
+                <h2 className="text-2xl font-bold uppercase tracking-wide" style={{fontFamily: 'Impact, Arial Black, sans-serif'}}>
+                  Your Referral Code
+                </h2>
               </div>
-              <p className="text-3xl font-medium mb-2 tracking-wider">{userCode}</p>
-              <p className="text-gray-800">Share with friends to earn 50% discounts!</p>
-              <p className="text-sm mt-2 text-gray-800">Active discounts: <span className="font-bold text-xl">{discountCount}</span> (stackable!)</p>
+              <p className="text-4xl font-bold mb-3 tracking-widest" style={{fontFamily: 'Courier New, monospace'}}>{userCode}</p>
+              <p className="text-stone-200 font-medium">Share with friends to earn 50% discounts!</p>
+              <p className="text-sm mt-3 text-stone-300">Active discounts: <span className="font-bold text-2xl text-lime-400">{discountCount}</span> (stackable!)</p>
             </div>
-            <div className="bg-white/40 rounded-lg p-4 backdrop-blur border border-emerald-800">
-              <p className="text-sm mb-2 font-normal">Have a referral code?</p>
+            <div className="bg-white/20 rounded-xl p-5 backdrop-blur border-2 border-lime-400">
+              <p className="text-sm mb-3 font-bold uppercase tracking-wide">Have a referral code?</p>
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="Enter code"
+                  placeholder="ENTER CODE"
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                  className="px-3 py-2 rounded border-0 text-gray-900"
+                  className="px-4 py-2 rounded-none border-2 border-stone-800 text-gray-900 font-bold uppercase"
+                  style={{fontFamily: 'Courier New, monospace'}}
                 />
                 <button
                   onClick={applyReferralCode}
-                  className="bg-emerald-700 text-white px-4 py-2 rounded font-normal hover:bg-emerald-800"
+                  className="bg-lime-500 text-stone-900 px-5 py-2 rounded-none font-bold uppercase tracking-wide hover:bg-lime-400"
                 >
                   Apply
                 </button>
@@ -313,8 +324,8 @@ export default function ApartmentStore() {
         </div>
 
         {isAdmin && (
-          <div className="bg-white rounded-lg shadow p-6 mb-8 border-2 border-emerald-200">
-            <h2 className="text-xl font-normal mb-4 text-gray-900" style={{fontFamily: 'Georgia, serif'}}>Add New Item</h2>
+          <div className="bg-stone-50 rounded-none shadow-lg p-6 mb-8 border-4 border-stone-400">
+            <h2 className="text-2xl font-bold mb-4 text-stone-800 uppercase tracking-wide" style={{fontFamily: 'Impact, Arial Black, sans-serif'}}>Add New Item</h2>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <input
                 type="text"
@@ -345,8 +356,8 @@ export default function ApartmentStore() {
                 className="border rounded px-3 py-2 col-span-2"
               />
             </div>
-            <button onClick={addItem} className="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 flex items-center gap-2 font-normal">
-              <Plus className="w-4 h-4" />
+            <button onClick={addItem} className="bg-green-700 text-white px-6 py-3 rounded-none hover:bg-green-800 flex items-center gap-2 font-bold uppercase tracking-wide shadow-lg">
+              <Plus className="w-5 h-5" />
               Add Item
             </button>
           </div>
@@ -354,7 +365,7 @@ export default function ApartmentStore() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow border border-green-100">
+            <div key={item.id} className="bg-white rounded-none shadow-xl hover:shadow-2xl transition-shadow border-4 border-stone-300">
               {editingItem?.id === item.id ? (
                 <div className="p-4">
                   <input
@@ -387,20 +398,20 @@ export default function ApartmentStore() {
               ) : (
                 <>
                   {item.image && (
-                    <img src={item.image} alt={item.name} className="w-full h-48 object-cover rounded-t-lg" />
+                    <img src={item.image} alt={item.name} className="w-full h-48 object-cover" />
                   )}
-                  <div className="p-4">
-                    <h3 className="font-normal text-xl mb-2 text-gray-900" style={{fontFamily: 'Georgia, serif'}}>{item.name}</h3>
+                  <div className="p-5">
+                    <h3 className="font-bold text-xl mb-2 text-stone-900 uppercase tracking-wide" style={{fontFamily: 'Arial Black, sans-serif'}}>{item.name}</h3>
                     {item.description && (
-                      <p className="text-gray-700 text-sm mb-3">{item.description}</p>
+                      <p className="text-stone-700 text-sm mb-4" style={{fontFamily: 'Georgia, serif'}}>{item.description}</p>
                     )}
-                    <div className="mb-3">
-                      <p className="text-gray-500 text-sm line-through">${parseFloat(item.price).toFixed(2)}</p>
-                      <p className="text-3xl font-medium text-emerald-700">
+                    <div className="mb-4">
+                      <p className="text-stone-500 text-sm line-through font-medium">${parseFloat(item.price).toFixed(2)}</p>
+                      <p className="text-4xl font-bold text-green-700">
                         ${calculatePrice(parseFloat(item.price)).toFixed(2)}
                       </p>
                       {discountCount > 0 && (
-                        <p className="text-xs text-emerald-600 font-medium">
+                        <p className="text-xs text-lime-600 font-bold uppercase mt-1">
                           {discountCount} discount{discountCount > 1 ? 's' : ''} applied!
                         </p>
                       )}
@@ -408,7 +419,7 @@ export default function ApartmentStore() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => addToCart(item)}
-                        className="flex-1 bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 flex items-center justify-center gap-2 font-normal"
+                        className="flex-1 bg-green-700 text-white px-4 py-3 rounded-none hover:bg-green-800 flex items-center justify-center gap-2 font-bold uppercase tracking-wide shadow-lg"
                       >
                         <ShoppingCart className="w-4 h-4" />
                         Buy Now
@@ -432,27 +443,27 @@ export default function ApartmentStore() {
         </div>
 
         {items.length === 0 && (
-          <div className="text-center py-12 text-gray-700">
-            <Tag className="w-16 h-16 mx-auto mb-4 opacity-50" />
-            <p className="text-xl font-normal" style={{fontFamily: 'Georgia, serif'}}>No items available yet</p>
-            {isAdmin && <p className="text-sm">Add your first item above!</p>}
+          <div className="text-center py-16 text-stone-700">
+            <Tag className="w-20 h-20 mx-auto mb-4 opacity-40" />
+            <p className="text-2xl font-bold uppercase tracking-wide" style={{fontFamily: 'Impact, Arial Black, sans-serif'}}>No items available yet</p>
+            {isAdmin && <p className="text-sm mt-2 font-medium">Add your first item above!</p>}
           </div>
         )}
       </div>
 
       {cart && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-amber-50 rounded-lg p-6 max-w-md w-full border-4 border-emerald-700">
-            <h2 className="text-2xl font-normal mb-4 text-gray-900" style={{fontFamily: 'Georgia, serif'}}>Checkout</h2>
-            <div className="mb-4">
-              <h3 className="font-normal text-lg text-gray-900">{cart.name}</h3>
-              <p className="text-gray-700 mb-2">{cart.description}</p>
-              <div className="bg-white p-3 rounded border border-green-200">
-                <p className="text-sm text-gray-700">Original price: ${parseFloat(cart.price).toFixed(2)}</p>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+          <div className="bg-stone-100 rounded-none p-8 max-w-md w-full border-4 border-stone-600 shadow-2xl">
+            <h2 className="text-3xl font-bold mb-6 text-stone-900 uppercase tracking-wide" style={{fontFamily: 'Impact, Arial Black, sans-serif'}}>Checkout</h2>
+            <div className="mb-6">
+              <h3 className="font-bold text-lg text-stone-900 uppercase" style={{fontFamily: 'Arial Black, sans-serif'}}>{cart.name}</h3>
+              <p className="text-stone-700 mb-4 mt-2" style={{fontFamily: 'Georgia, serif'}}>{cart.description}</p>
+              <div className="bg-white p-4 rounded-none border-2 border-stone-400">
+                <p className="text-sm text-stone-700 font-medium">Original price: ${parseFloat(cart.price).toFixed(2)}</p>
                 {discountCount > 0 && (
-                  <p className="text-sm text-emerald-700 font-medium">With {discountCount} discount{discountCount > 1 ? 's' : ''}</p>
+                  <p className="text-sm text-lime-600 font-bold uppercase mt-1">With {discountCount} discount{discountCount > 1 ? 's' : ''}</p>
                 )}
-                <p className="text-2xl font-medium text-emerald-800 mt-2">
+                <p className="text-3xl font-bold text-green-800 mt-3">
                   Final: ${calculatePrice(parseFloat(cart.price)).toFixed(2)}
                 </p>
               </div>
@@ -460,13 +471,13 @@ export default function ApartmentStore() {
             <div className="flex gap-3">
               <button
                 onClick={checkout}
-                className="flex-1 bg-emerald-600 text-white px-4 py-3 rounded hover:bg-emerald-700 font-normal"
+                className="flex-1 bg-green-700 text-white px-6 py-4 rounded-none hover:bg-green-800 font-bold uppercase tracking-wide shadow-lg"
               >
                 Confirm Purchase
               </button>
               <button
                 onClick={() => setCart(null)}
-                className="px-4 py-3 border-2 border-emerald-700 text-gray-900 rounded hover:bg-green-50 font-normal"
+                className="px-6 py-4 border-4 border-stone-700 text-stone-900 rounded-none hover:bg-stone-200 font-bold uppercase tracking-wide"
               >
                 Cancel
               </button>
