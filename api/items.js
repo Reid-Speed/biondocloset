@@ -1,17 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+  process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.biondocloset_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_biondocloset_SUPABASE_ANON_KEY
 );
 
 export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
-      // Get all items
+      // Get all items that are not sold
       const { data, error } = await supabase
         .from('items')
         .select('*')
+        .eq('sold', false)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -42,11 +43,11 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      // Delete item
+      // Soft delete item (mark as sold)
       const { id } = req.body;
       const { data, error } = await supabase
         .from('items')
-        .delete()
+        .update({ sold: true })
         .eq('id', id);
 
       if (error) throw error;

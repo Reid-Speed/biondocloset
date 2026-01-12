@@ -231,7 +231,7 @@ export default function ApartmentStore() {
             Please send ${calculatePrice(cart.price).toFixed(2)} via Venmo to complete your purchase.
           </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <p className="font-semibold text-lg">Venmo: @YourVenmoHandle</p>
+            <p className="font-semibold text-lg">Venmo: @Reid-Biondo</p>
           </div>
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
             <p className="text-sm font-semibold mb-2">Your Referral Code:</p>
