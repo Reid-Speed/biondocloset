@@ -263,10 +263,10 @@ export default function ApartmentStore() {
             <div>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-stone-800 uppercase" 
                   style={{fontFamily: 'Impact, Arial Black, sans-serif', letterSpacing: '0.05em'}}>
-                Reid's Collection
+                Biondo's Bargains & Auction House
               </h1>
               <p className="text-stone-700 text-base sm:text-lg mt-1 sm:mt-2 font-medium" style={{fontFamily: 'Georgia, serif'}}>
-                Timeless pieces for modern living
+                Share the Site ➡️ Receive Discounts ➡️ Get it For Free
               </p>
             </div>
             {!isAdmin && (
